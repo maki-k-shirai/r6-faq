@@ -5,13 +5,14 @@ import React, { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { FAQ } from "@/app/faq/types";
 
-// 5カテゴリ（表示順）
+// 6カテゴリ（表示順）
 const BUCKETS = [
   "対応概要",
   "移行計画",
   "科目・マスタ",
   "帳票・出力",
   "費用・契約",
+  "オプション機能",
 ] as const;
 type Bucket = (typeof BUCKETS)[number];
 
@@ -50,13 +51,20 @@ const COLORS: Record<
     chipText: "text-rose-700",
     hover: "hover:bg-rose-50",
   },
+  "オプション機能": {
+    border: "border-teal-200",
+    chip: "bg-teal-50",
+    chipText: "text-teal-700",
+    hover: "hover:bg-teal-50",
+  },
 };
 
 type Props = {
   faqs: FAQ[];
+  initialQuery?: string;
 };
 
-export default function FaqList({ faqs }: Props) {
+export default function FaqList({ faqs, initialQuery = "" }: Props) {
   const list: FAQ[] = Array.isArray(faqs)
     ? faqs
     : (faqs as any)?.default && Array.isArray((faqs as any).default)
@@ -65,7 +73,7 @@ export default function FaqList({ faqs }: Props) {
 
   // --- フィルタ状態 ---
   const [activeCat, setActiveCat] = useState<Bucket | "すべて">("すべて");
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(initialQuery);
 
   // --- 開閉制御（カードクリックで開閉） ---
   const [openId, setOpenId] = useState<number | null>(null);
@@ -235,6 +243,7 @@ export default function FaqList({ faqs }: Props) {
                       onCopy={() => copyAnswer(item.id, item.answer)}
                       copied={copiedId === item.id}
                       onTagClick={(t) => setQ((prev) => (prev ? `${prev} ${t}` : t))}
+                      keyword={q}
                     />
                   ))}
                 </ul>
@@ -258,12 +267,40 @@ export default function FaqList({ faqs }: Props) {
                 onCopy={() => copyAnswer(item.id, item.answer)}
                 copied={copiedId === item.id}
                 onTagClick={(t) => setQ((prev) => (prev ? `${prev} ${t}` : t))}
+                keyword={q}
               />
             );
           })}
           {!filtered.length && (
             <li className="rounded-2xl border bg-white p-6 text-center text-slate-500">
-              条件に一致するFAQが見つかりませんでした。
+              <p className="mb-3">条件に一致するFAQが見つかりませんでした。</p>
+              {q.trim() && (() => {
+                const suggestions = Array.from(
+                  new Set(list.flatMap((f) => (Array.isArray(f.tags) ? f.tags : [])))
+                )
+                  .filter((t) => {
+                    const tl = t.toLowerCase();
+                    const ql = q.trim().toLowerCase();
+                    return tl.includes(ql) || ql.includes(tl);
+                  })
+                  .slice(0, 8);
+                return suggestions.length ? (
+                  <div>
+                    <p className="mb-2 text-xs text-slate-400">関連するタグを試してみてください：</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {suggestions.map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setQ(t)}
+                          className="rounded-full border px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-100"
+                        >
+                          #{t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
             </li>
           )}
         </ul>
@@ -272,6 +309,28 @@ export default function FaqList({ faqs }: Props) {
       {/* トースト */}
       <Toast show={copiedId !== null} message="回答をコピーしました" />
     </section>
+  );
+}
+
+/** キーワードをハイライトした ReactNode を返す */
+function highlight(text: string, keyword: string): React.ReactNode {
+  const term = keyword.trim().split(/\s+/)[0];
+  if (!term) return text;
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+  if (parts.length <= 1) return text;
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <mark key={i} className="rounded bg-yellow-100 px-0.5 text-yellow-900">
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
   );
 }
 
@@ -284,6 +343,7 @@ function ItemCard({
   onCopy,
   copied,
   onTagClick,
+  keyword,
 }: {
   item: FAQ;
   color: { border: string; chip: string; chipText: string; hover: string };
@@ -292,6 +352,7 @@ function ItemCard({
   onCopy: () => void;
   copied: boolean;
   onTagClick: (t: string) => void;
+  keyword: string;
 }) {
   return (
     <li
@@ -318,7 +379,7 @@ function ItemCard({
             <div className="flex-1">
               <div
                 className={[
-                  "mb-1 inline-flex items-center rounded-full px-2 py-0.5 text-[11px]",
+                  "mb-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs",
                   color.chip,
                   color.chipText,
                 ].join(" ")}
@@ -326,7 +387,7 @@ function ItemCard({
                 {item.category}
               </div>
               <h3 className="text-base font-semibold leading-snug">
-                {item.question}
+                {keyword ? highlight(item.question, keyword) : item.question}
               </h3>
             </div>
             <span className="mt-1 shrink-0 rounded-full border px-2 py-0.5 text-xs text-slate-600">
@@ -344,7 +405,7 @@ function ItemCard({
             <div className="prose prose-sm max-w-none">
               <ReactMarkdown
                 components={{
-                  a({ node, ...props }) {
+                  a(props) {
                     return (
                       <a
                         {...props}
@@ -354,10 +415,10 @@ function ItemCard({
                       />
                     );
                   },
-                  ul({ node, ...props }) {
+                  ul(props) {
                     return <ul className="list-disc pl-5" {...props} />;
                   },
-                  ol({ node, ...props }) {
+                  ol(props) {
                     return <ol className="list-decimal pl-5" {...props} />;
                   },
                   code({ children, className, ...props }) {
@@ -436,7 +497,7 @@ function ItemCard({
                 </svg>
                 {copied ? "コピー済み" : "コピー"}
               </button>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-xs text-slate-500">
                 更新日: {item.updated_at}
               </div>
             </div>
