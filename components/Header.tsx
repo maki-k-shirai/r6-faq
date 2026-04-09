@@ -6,9 +6,8 @@ import { useState } from "react";
 
 const NAV_ITEMS = [
   { label: "FAQ", href: "/faq" },
-  { label: "変更点ガイド", href: "/guide" },
-  { label: "社内方針", href: "/policies" },
-  { label: "リリース情報", href: "/releases" },
+  // { label: "社内方針", href: "/policies" },   // 修正1：一時非表示
+  // { label: "リリース情報", href: "/releases" }, // 修正1：一時非表示
 ];
 
 export default function Header() {
@@ -19,27 +18,27 @@ export default function Header() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white shadow-sm">
+    <header className="sticky top-0 z-50 bg-pink-900 shadow-sm">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        {/* ロゴ — rounded を rounded-md に統一 */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-slate-800 hover:opacity-80">
-          <span className="rounded-md bg-slate-900 px-2 py-0.5 text-xs font-semibold text-white">
+        {/* ロゴ */}
+        <Link href="/" className="flex items-center gap-2 font-bold text-white hover:opacity-80">
+          <span className="rounded-md bg-black/20 px-2 py-0.5 text-xs font-semibold text-white">
             R6
           </span>
           <span className="text-sm">令和6年基準対応ポータル</span>
         </Link>
 
-        {/* デスクトップナビ — アクティブは軽い bg-slate-100 に変更 */}
+        {/* デスクトップナビ */}
         <nav className="hidden items-center gap-1 sm:flex">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={[
-                "rounded-lg px-3 py-1.5 text-sm transition",
+                "rounded-md px-3 py-1.5 text-sm transition",
                 isActive(item.href)
-                  ? "bg-slate-100 font-semibold text-slate-900"
-                  : "text-slate-600 hover:bg-slate-100",
+                  ? "bg-black/20 font-semibold text-white"
+                  : "text-white/80 hover:bg-white/10",
               ].join(" ")}
             >
               {item.label}
@@ -49,7 +48,7 @@ export default function Header() {
 
         {/* モバイルハンバーガー */}
         <button
-          className="rounded-md p-2 text-slate-600 hover:bg-slate-100 sm:hidden"
+          className="rounded-md p-2 text-white/80 hover:bg-white/10 sm:hidden"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? "メニューを閉じる" : "メニューを開く"}
           aria-expanded={menuOpen}
@@ -64,10 +63,10 @@ export default function Header() {
         </button>
       </div>
 
-      {/* モバイルメニュー — max-height でスライドアニメーション */}
+      {/* モバイルメニュー */}
       <nav
         className={[
-          "overflow-hidden border-t bg-white px-4 transition-all duration-200 ease-in-out sm:hidden",
+          "overflow-hidden border-t border-white/10 bg-pink-900 px-4 transition-all duration-200 ease-in-out sm:hidden",
           menuOpen ? "max-h-64 py-2 opacity-100" : "max-h-0 py-0 opacity-0",
         ].join(" ")}
         aria-hidden={!menuOpen}
@@ -78,10 +77,10 @@ export default function Header() {
             href={item.href}
             onClick={() => setMenuOpen(false)}
             className={[
-              "block rounded-lg px-3 py-2 text-sm",
+              "block rounded-md px-3 py-2 text-sm",
               isActive(item.href)
-                ? "bg-slate-100 font-semibold text-slate-900"
-                : "text-slate-600 hover:bg-slate-100",
+                ? "bg-black/20 font-semibold text-white"
+                : "text-white/80 hover:bg-white/10",
             ].join(" ")}
           >
             {item.label}

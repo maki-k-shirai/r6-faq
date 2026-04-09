@@ -52,11 +52,6 @@ function readFile(dir: string, slug: string): ContentItem | null {
   };
 }
 
-// --- 変更点ガイド ---
-export const getGuideList = (): ContentMeta[] => readDir("guide");
-export const getGuideItem = (slug: string): ContentItem | null =>
-  readFile("guide", slug);
-
 // --- 社内方針 ---
 export const getPolicyList = (): ContentMeta[] => readDir("policies");
 export const getPolicyItem = (slug: string): ContentItem | null =>
@@ -70,7 +65,7 @@ export const getReleaseItem = (slug: string): ContentItem | null =>
 
 // --- 横断検索 ---
 export type SearchResult = {
-  section: "faq" | "guide" | "policies" | "releases";
+  section: "faq" | "policies" | "releases";
   sectionLabel: string;
   slug: string;
   href: string;
@@ -112,15 +107,15 @@ export function getAllContent(query: string): SearchResult[] {
   }
 
   // Markdown セクション共通処理
+  // 修正1：policies / releases は一時的に検索対象から除外
   const sections: Array<{
     dir: string;
     section: SearchResult["section"];
     sectionLabel: string;
     hrefBase: string;
   }> = [
-    { dir: "guide",    section: "guide",    sectionLabel: "変更点ガイド", hrefBase: "/guide"    },
-    { dir: "policies", section: "policies", sectionLabel: "社内方針",     hrefBase: "/policies" },
-    { dir: "releases", section: "releases", sectionLabel: "リリース情報", hrefBase: "/releases" },
+    // { dir: "policies", section: "policies", sectionLabel: "社内方針",     hrefBase: "/policies" },
+    // { dir: "releases", section: "releases", sectionLabel: "リリース情報", hrefBase: "/releases" },
   ];
 
   for (const { dir, section, sectionLabel, hrefBase } of sections) {
@@ -150,11 +145,6 @@ export function getAllContent(query: string): SearchResult[] {
 export type RecentItem = ContentMeta & { section: string; sectionLabel: string };
 
 export function getRecentUpdates(limit = 5): RecentItem[] {
-  const guide = getGuideList().map((m) => ({
-    ...m,
-    section: "guide",
-    sectionLabel: "変更点ガイド",
-  }));
   const policies = getPolicyList().map((m) => ({
     ...m,
     section: "policies",
@@ -165,7 +155,7 @@ export function getRecentUpdates(limit = 5): RecentItem[] {
     section: "releases",
     sectionLabel: "リリース情報",
   }));
-  return [...guide, ...policies, ...releases]
+  return [...policies, ...releases]
     .filter((m) => m.updated_at)
     .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1))
     .slice(0, limit);

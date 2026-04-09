@@ -16,10 +16,10 @@ export default async function FaqPage({
 
   return (
     <div className="min-h-screen">
-      <section className="border-b bg-gradient-to-b from-slate-50 to-white">
+      <section className="border-b bg-white">
         <div className="mx-auto max-w-5xl px-4 py-8">
-          <h1 className="text-2xl font-extrabold tracking-tight">FAQ</h1>
-          <p className="mt-1 text-slate-600">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">FAQ</h1>
+          <p className="mt-1 text-gray-500">
             カテゴリから選ぶか、キーワードで素早く検索。
           </p>
         </div>

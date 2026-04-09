@@ -130,7 +130,6 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1200);
     } catch (e) {
-      // 失敗時は無視（必要なら alert 等）
       console.error("copy failed", e);
     }
   };
@@ -144,9 +143,9 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-8">
-      {/* 検索ブロック（大きめに） */}
-      <div className="mb-6 rounded-2xl border bg-white px-4 py-5 shadow-sm">
-        <label htmlFor="faq-search" className="block text-sm font-medium text-slate-700">
+      {/* 検索ブロック */}
+      <div className="mb-6 rounded-md border-0 bg-white px-4 py-5 shadow-sm ring-1 ring-black/5">
+        <label htmlFor="faq-search" className="block text-sm font-medium text-gray-700">
           キーワードで検索
         </label>
         <div className="mt-2 flex items-center gap-2">
@@ -170,23 +169,23 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="例：暫定版、予算書、費用、移行 など"
-              className="w-full rounded-xl border px-10 py-3 text-base outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400"
+              className="w-full rounded-md border-0 bg-white py-2 pl-10 pr-4 text-sm shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-600"
             />
           </div>
           <button
             onClick={clearAll}
-            className="shrink-0 rounded-xl border px-4 py-3 text-sm hover:bg-slate-50"
+            className="shrink-0 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-pink-900 focus-visible:border-pink-900"
           >
             クリア
           </button>
         </div>
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-gray-500">
           {filtered.length} 件ヒット（全 {list.length} 件）
         </p>
       </div>
 
       {/* カテゴリタブ */}
-      <div className="mb-2 text-sm font-medium text-slate-600">
+      <div className="mb-2 text-sm font-medium text-gray-600">
         カテゴリで検索
       </div>
       <div className="mb-6 flex flex-wrap gap-2">
@@ -218,14 +217,14 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
             return (
               <section key={bucket}>
                 <div className="mb-3 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     {bucket}{" "}
-                    <span className="align-middle text-xs text-slate-500">
+                    <span className="align-middle text-xs text-gray-500">
                       （{counts.get(bucket) || 0}件）
                     </span>
                   </h3>
                   <button
-                    className="text-sm text-slate-600 underline decoration-dashed underline-offset-4 hover:opacity-80"
+                    className="text-sm text-gray-600 underline decoration-dashed underline-offset-4 hover:opacity-80"
                     onClick={() => setActiveCat(bucket)}
                   >
                     もっと見る
@@ -255,7 +254,6 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
         // フィルタ後は通常のリスト（全件表示）
         <ul className="grid gap-4">
           {filtered.map((item) => {
-            // カラーはカテゴリに準拠（型安全のため as Bucket）
             const color = COLORS[(item.category as Bucket) || "対応概要"];
             return (
               <ItemCard
@@ -272,7 +270,7 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
             );
           })}
           {!filtered.length && (
-            <li className="rounded-2xl border bg-white p-6 text-center text-slate-500">
+            <li className="rounded-md border bg-white p-6 text-center text-gray-500 shadow-sm ring-1 ring-black/5">
               <p className="mb-3">条件に一致するFAQが見つかりませんでした。</p>
               {q.trim() && (() => {
                 const suggestions = Array.from(
@@ -286,13 +284,13 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
                   .slice(0, 8);
                 return suggestions.length ? (
                   <div>
-                    <p className="mb-2 text-xs text-slate-400">関連するタグを試してみてください：</p>
+                    <p className="mb-2 text-xs text-gray-400">関連するタグを試してみてください：</p>
                     <div className="flex flex-wrap justify-center gap-2">
                       {suggestions.map((t) => (
                         <button
                           key={t}
                           onClick={() => setQ(t)}
-                          className="rounded-full border px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-100"
+                          className="rounded-full border px-2.5 py-1 text-xs text-gray-700 hover:bg-gray-100"
                         >
                           #{t}
                         </button>
@@ -357,22 +355,21 @@ function ItemCard({
   return (
     <li
       className={[
-        "rounded-2xl border bg-white shadow-sm transition",
+        "rounded-md border bg-white shadow-sm transition",
         color.border,
         "hover:shadow-md",
-        "cursor-pointer", // カード全体クリック可能
+        "cursor-pointer",
       ].join(" ")}
-      onClick={onToggle} // カードどこでも開閉
+      onClick={onToggle}
     >
       <details
         open={open}
-        className="group rounded-2xl"
-        // details/summary のデフォ挙動と競合しないように summary 側で preventDefault
+        className="group rounded-md"
       >
         <summary
-          className="cursor-pointer list-none rounded-2xl px-5 py-4"
+          className="cursor-pointer list-none rounded-md px-5 py-4"
           onClick={(e) => {
-            e.preventDefault(); // details のデフォ開閉を止めて制御に一本化
+            e.preventDefault();
           }}
         >
           <div className="flex items-start justify-between gap-3">
@@ -386,11 +383,11 @@ function ItemCard({
               >
                 {item.category}
               </div>
-              <h3 className="text-base font-semibold leading-snug">
+              <h3 className="text-base font-semibold leading-snug text-gray-900">
                 {keyword ? highlight(item.question, keyword) : item.question}
               </h3>
             </div>
-            <span className="mt-1 shrink-0 rounded-full border px-2 py-0.5 text-xs text-slate-600">
+            <span className="mt-1 shrink-0 rounded-full border px-2 py-0.5 text-xs text-gray-500">
               ID {item.id}
             </span>
           </div>
@@ -399,9 +396,9 @@ function ItemCard({
         {/* 回答 */}
         <div
           className="px-5 pb-4 -mt-1"
-          onClick={(e) => e.stopPropagation()} // 内部操作で親の開閉を発火させない
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className={["rounded-xl px-4 py-3 text-sm leading-relaxed", "bg-slate-50/60"].join(" ")}>
+          <div className="rounded-md px-4 py-3 text-sm leading-relaxed bg-gray-50">
             <div className="prose prose-sm max-w-none">
               <ReactMarkdown
                 components={{
@@ -426,14 +423,14 @@ function ItemCard({
                     const isBlock = text.includes("\n");
                     if (isBlock) {
                       return (
-                        <pre className="overflow-x-auto rounded-md bg-slate-900/95 px-3 py-2 text-[12px] text-slate-100">
+                        <pre className="overflow-x-auto rounded-md bg-gray-900/95 px-3 py-2 text-[12px] text-gray-100">
                           <code {...props}>{text}</code>
                         </pre>
                       );
                     }
                     return (
                       <code
-                        className="rounded bg-slate-100 px-1 py-0.5 text-[0.85em]"
+                        className="rounded bg-gray-100 px-1 py-0.5 text-[0.85em]"
                         {...props}
                       >
                         {text}
@@ -459,10 +456,7 @@ function ItemCard({
                       e.stopPropagation();
                       onTagClick(t);
                     }}
-                    className={[
-                      "rounded-full border px-2.5 py-1 text-xs text-slate-700",
-                      "hover:bg-slate-100",
-                    ].join(" ")}
+                    className="rounded-full border px-2.5 py-1 text-xs text-gray-700 hover:bg-gray-100"
                     aria-label={`タグ ${t} で検索`}
                   >
                     #{t}
@@ -480,10 +474,7 @@ function ItemCard({
                   e.stopPropagation();
                   onCopy();
                 }}
-                className={[
-                  "inline-flex items-center gap-1 rounded-md border px-2.5 py-1.5 text-xs",
-                  "hover:bg-white",
-                ].join(" ")}
+                className="inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
                 aria-label="回答をコピー"
                 title="回答をコピー"
               >
@@ -497,7 +488,7 @@ function ItemCard({
                 </svg>
                 {copied ? "コピー済み" : "コピー"}
               </button>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-gray-500">
                 更新日: {item.updated_at}
               </div>
             </div>
@@ -525,7 +516,7 @@ function Tab({
       onClick={onClick}
       className={[
         "flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition",
-        active ? "bg-slate-900 text-white border-slate-900" : "hover:bg-slate-50",
+        active ? "bg-pink-900 text-white border-pink-900" : "bg-white text-gray-700 hover:bg-gray-50",
       ].join(" ")}
       aria-pressed={active}
     >
@@ -533,7 +524,7 @@ function Tab({
       <span
         className={[
           "rounded-full px-1.5 text-xs",
-          active ? "bg-white/20" : "bg-slate-100",
+          active ? "bg-white/20" : "bg-gray-100",
         ].join(" ")}
       >
         {count}
@@ -552,7 +543,7 @@ function Toast({ show, message }: { show: boolean; message: string }) {
       ].join(" ")}
       aria-live="polite"
     >
-      <div className="rounded-full border bg-white px-4 py-2 text-sm text-slate-700 shadow-md">
+      <div className="rounded-full border bg-white px-4 py-2 text-sm text-gray-700 shadow-md">
         {message}
       </div>
     </div>
