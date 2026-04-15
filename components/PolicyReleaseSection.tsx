@@ -2,8 +2,10 @@ import Link from "next/link";
 import { getPolicyList, getReleaseList } from "@/lib/content";
 
 export default function PolicyReleaseSection() {
-  const policyList = getPolicyList();
-  const releaseList = getReleaseList();
+  const policyList = getPolicyList()
+    .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1))
+    .slice(0, 3);
+  const releaseList = getReleaseList().slice(0, 3);
 
   return (
     <>
