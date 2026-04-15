@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
+    font-size: 10pt;
+    line-height: 1.75;
+    color: #2c2c2a;
+    background: #fff;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 18mm 16mm 18mm;
+  }
+
+  .cover {
+    border-left: 4px solid #1D9E75;
+    padding: 4px 0 4px 14px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 15pt; font-weight: 700; color: #1c1c1a; margin-bottom: 4px; }
+  .cover .meta { font-size: 9pt; color: #888780; }
+
+  .section { margin-bottom: 20px; }
+  .section-title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #888780;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #d3d1c7;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+  }
+
+  .summary {
+    background: #f5f4f0;
+    border-radius: 6px;
+    padding: 11px 14px;
+    font-size: 10pt;
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .summary-stats {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .stat-chip {
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .stat-bug         { background: #FEE2E2; color: #991B1B; }
+  .stat-improvement { background: #E1F5EE; color: #085041; }
+  .stat-feature     { background: #EFF6FF; color: #1E40AF; }
+  .stat-other       { background: #f5f4f0; color: #5F5E5A; border: 1px solid #d3d1c7; }
+
+  .ticket-card {
+    border-radius: 6px;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    border-left: 3px solid transparent;
+  }
+  .ticket-card.bug         { background: #FEE2E2; border-left-color: #DC2626; }
+  .ticket-card.improvement { background: #E1F5EE; border-left-color: #1D9E75; }
+  .ticket-card.feature     { background: #EFF6FF; border-left-color: #2563EB; }
+  .ticket-card.warn        { background: #FAEEDA; border-left-color: #EF9F27; }
+
+  .ticket-id    { font-size: 7.5pt; font-weight: 700; color: #888780; margin-bottom: 2px; }
+  .ticket-title { font-size: 10pt; font-weight: 700; color: #1c1c1a; margin-bottom: 8px; }
+  .ticket-label { font-size: 7.5pt; font-weight: 700; color: #5F5E5A; margin-top: 7px; margin-bottom: 2px; }
+  .ticket-body  { font-size: 9pt; color: #3a3a38; line-height: 1.65; }
+
+  .type-tag {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .type-tag.bug         { background: #DC2626; color: #fff; }
+  .type-tag.improvement { background: #1D9E75; color: #fff; }
+  .type-tag.feature     { background: #2563EB; color: #fff; }
+  .type-tag.warn-tag    { background: #EF9F27; color: #fff; }
+
+  .support-memo {
+    background: #fff;
+    border-radius: 4px;
+    padding: 7px 10px;
+    margin-top: 6px;
+    font-size: 9pt;
+    color: #3a3a38;
+    line-height: 1.65;
+  }
+  .support-memo .label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #085041;
+    margin-bottom: 3px;
+  }
+  .support-memo.caution .label { color: #633806; }
+
+  .notice {
+    background: #FAEEDA;
+    border-radius: 6px;
+    padding: 11px 14px;
+    border-left: 3px solid #EF9F27;
+    margin-bottom: 10px;
+  }
+  .notice-title { font-size: 9pt; font-weight: 700; color: #633806; margin-bottom: 4px; }
+  .notice p     { font-size: 9pt; color: #633806; line-height: 1.7; }
+
+  .alert-block {
+    background: #FEF3C7;
+    border-radius: 6px;
+    padding: 11px 14px;
+    border-left: 3px solid #F59E0B;
+    margin-bottom: 10px;
+  }
+  .alert-block .alert-title { font-size: 9pt; font-weight: 700; color: #92400E; margin-bottom: 4px; }
+  .alert-block p            { font-size: 9pt; color: #92400E; line-height: 1.7; }
+
+  .group-label {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #5F5E5A;
+    margin: 14px 0 8px 0;
+    padding-left: 4px;
+    border-left: 2px solid #d3d1c7;
+  }
+
+  .footer {
+    margin-top: 24px;
+    padding-top: 8px;
+    border-top: 1px solid #d3d1c7;
+    font-size: 7.5pt;
+    color: #888780;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ヘッダー -->
+  <div class="cover">
+    <h1>INF会計　リリースノート（2026/04/15）</h1>
+    <div class="meta">社内サポートチーム向け　／　リリース日：2026年4月15日　／　社内配布用・取扱注意</div>
+  </div>
+
+  <!-- 概要 -->
+  <div class="section">
+    <div class="section-title">このリリースの概要</div>
+    <div class="summary">
+      令和6年基準対応（正式版）の帳票・集計・按分処理まわりを中心に18件の機能改善、バグ修正10件、新機能3件の合計31件。顧客影響のある不具合修正を複数含む。SUPPORTチケットに紐づく案件は4件、全件の法人名が特定済み。
+      <div class="summary-stats">
+        <span class="stat-chip stat-bug">バグ修正 10件</span>
+        <span class="stat-chip stat-improvement">機能改善 18件</span>
+        <span class="stat-chip stat-feature">新機能 3件</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- バグ修正 -->
+  <div class="section">
+    <div class="section-title">バグ修正（10件）</div>
+
+    <div class="group-label">従来機能のバグ修正</div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1689" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1689</a> / <a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1691" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">1691</a></div>
+      <div class="ticket-title">会計名略称登録・科目登録で訂正時の期間選択画面が正常に動作しない <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">会計名略称登録（KIYV200）および会計名略称科目登録において、履歴がある状態で訂正を行うと期間選択画面が表示されない・またはエラーになる不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">会計名略称登録（KIYV200）、会計名略称科目登録</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        影響法人・SUPPORTチケットなし。<strong>暫定版・正式版の両方に影響あり。</strong>複数年度の履歴を持つ法人で訂正操作を行ったときに発生するため、「訂正しようとしたら画面が出ない・エラーになる」という問い合わせがあれば本件が該当する可能性が高い。バージョン確認を最初に行うこと。顧客連絡：要確認（報告元なし）。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1762" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1762</a></div>
+      <div class="ticket-title">予算要求集計表の出力に10分以上かかる <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">53ページ規模の予算要求集計表出力に10分以上かかっていたパフォーマンス問題を改善。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">予算要求集計表</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（SUPPORTチケットあり）</div>
+        SUPPORT-2613に紐づく案件。<strong>影響法人：栃木県国民健康保険団体連合会。</strong>バージョン適用後にパフォーマンスが改善されたことを確認し、同法人に解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1771" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1771</a></div>
+      <div class="ticket-title">予算按分計算処理で配賦金額が大きい場合に緊急対策になる <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">予算按分計算処理において、配賦金額が大きい場合に緊急対策画面が表示されていた不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">予算按分計算処理</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（影響法人あり）</div>
+        <strong>影響法人：教科書研究センター。</strong>バージョン適用後に按分処理が正常に動作することを確認し、同法人へ解消連絡を行うこと。金額規模の大きい法人で同様の問い合わせがあれば本件を案内すること。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1889" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1889</a></div>
+      <div class="ticket-title">Excel出力でマイナス値が文字列として出力され数値として扱えない <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">貸借対照表（月次推移表）・正味財産増減計算書（月次推移表）などのExcel出力において、マイナス値が数値ではなく文字列として出力されていた不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">貸借対照表（月次推移表）、正味財産増減計算書（月次推移表）、その他関連帳票のExcel出力</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（SUPPORTチケットあり）</div>
+        SUPPORT-2732に紐づく案件。<strong>影響法人：バイオ産業情報化コンソーシアム。</strong>バージョン適用後にExcel出力のマイナス値が正常に数値として出力されることを確認し、同法人に解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1890" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1890</a></div>
+      <div class="ticket-title">按分データ一括削除のExcel出力時に緊急対策になる <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">システム日付が法人属性レコードの有効期間外の場合、法人名が取得できずExcelシート名が空白となりエラーが発生していた不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">按分データ一括削除（Excel出力）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        影響法人・SUPPORTチケットなし。法人属性の有効期間設定に関係する問題のため、「按分の一括削除でExcel出力するとエラーになる」という問い合わせがあれば本件を案内すること。顧客連絡：要確認（報告元なし）。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1949" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1949</a></div>
+      <div class="ticket-title">振替伝票様式「A5（5行）」が2枚に分かれて出力される <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">振替伝票様式「A5（5行）」が1枚ではなく2枚に分けて出力されていた不具合を修正。Ver2.7.1.0バージョンアップ後に発生した問題。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">振替伝票出力（A5・5行様式、クラウド版）</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（SUPPORTチケットあり）</div>
+        SUPPORT-2813に紐づく案件。<strong>影響法人：都城市文化振興財団。</strong>バージョン適用後に振替伝票A5様式が1枚出力になることを確認し、同法人に解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="group-label">令和6年基準対応</div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1862" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1862</a></div>
+      <div class="ticket-title">貸借対照表（暫定版）で科目間調整入力額が翌年度前期欄に反映されない <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">貸借対照表（暫定版）において、科目間調整入力額が翌年度の前期欄に反映されない不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">貸借対照表（暫定版のみ）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        <strong>暫定版利用中の法人のみ対象。</strong>社内テスト環境で確認。顧客からの報告は現時点でなし。前期金額がおかしいという問い合わせがあった場合は暫定版かどうかを最初に確認すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1965" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1965</a></div>
+      <div class="ticket-title">廃止済み科目が変換不可データリストに出力される <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">変換不可データリストに廃止済み科目まで出力されていた不具合を修正。新法人側に存在する科目のみを対象に出力するよう変更。令和8年度より令和6年基準へ移行したユーザーで発生。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">変換不可データリスト</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（影響法人あり）</div>
+        SUPPORT-2905に紐づく案件。<strong>影響法人：香川県農地機構（旧：香川県農業振興公社）。</strong>バージョン適用後に変換不可データリストを再出力して正常表示されることを確認し、同法人へ解消連絡を行うこと。R6移行ユーザーで発生する問題のため、他のR6移行法人にも同様の事象がないか確認を推奨。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1966" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1966</a></div>
+      <div class="ticket-title">総勘定元帳の一般純資産残高が貸借対照表試算表と一致しない <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">一般純資産の科目について、R6基準への対応が未了のため現時点では総勘定元帳への出力を停止。次回以降のバージョンで正式対応予定。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">総勘定元帳</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        社内テスト環境で確認。<strong>一般純資産の科目が総勘定元帳に表示されなくなる</strong>ため、R6基準ユーザーから「元帳に科目が出ない」という問い合わせが来る可能性がある。次バージョンで正式対応予定である旨を案内すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1970" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1970</a></div>
+      <div class="ticket-title">日計表（現預金・収支）に現金預金科目以外が表示される <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">日計表の「現金預金（資金）」欄に現金預金以外の科目が表示されていた不具合を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOOS050 日計表（現預金・収支）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        社内テスト環境で確認。R6基準対応の日計表を利用しているユーザーで「日計表の科目がおかしい」という問い合わせがあれば本件を案内すること。顧客連絡：要確認（報告元なし）。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 機能改善 -->
+  <div class="section">
+    <div class="section-title">機能改善（18件）</div>
+
+    <div class="group-label">令和6年基準対応（帳票タイトル・表示変更）</div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1405" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1405</a></div>
+      <div class="ticket-title">活動試算表：一般・指定区分の条件指定と帳票タイトル変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準対応として、収支試算表兼予算残高表（KOMS030）に一般・指定区分の条件指定機能を追加。帳票タイトルを「活動試算表」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOMS030 収支試算表兼予算残高表、科目ワークデータ作成処理</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。「試算表の帳票名が変わった」という問い合わせには「R6基準対応による変更」として案内すること。科目ワークへの修正は本帳票処理に限定。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1732" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1732</a></div>
+      <div class="ticket-title">総勘定元帳（科目レベル）：一般・指定区分の出力と財源情報の摘要欄表示 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準対応として、総勘定元帳に一般・指定区分の出力および条件指定機能を追加。財源関連情報を摘要欄に出力するよう対応。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KND0720 総勘定元帳（科目レベル）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。摘要欄への財源情報追加により表示内容が増えるため、「摘要欄に見慣れない項目が出る」という問い合わせには「R6基準対応による追加」として案内。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1744" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1744</a></div>
+      <div class="ticket-title">摘要別元帳：一般・指定区分の出力と財源情報の摘要欄表示 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準対応として、摘要別元帳に一般・指定区分の出力を追加。財源関連情報の摘要欄出力に対応。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOO0090 摘要別元帳</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。総勘定元帳（INFKAIKEI-1732）と科目ワークを共有するため、開発上の依存関係あり。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1752" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1752</a></div>
+      <div class="ticket-title">活動予算残高一覧表：R6基準時に帳票タイトルを変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準以降の場合、「収支予算残高一覧表」（KOYS400）の帳票タイトルを「活動予算残高一覧表」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOYS400 収支予算残高一覧表</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。タイトル変更のみのため機能への影響はない。「帳票名が変わった」という問い合わせには「R6基準対応による変更」として案内。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1753" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1753</a></div>
+      <div class="ticket-title">事業別活動予算残高一覧表：R6基準時に帳票タイトルを変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準以降の場合、「事業別収支予算残高一覧表」（KOG0120）の帳票タイトルを「事業別活動予算残高一覧表」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOG0120 事業別収支予算残高一覧表</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。タイトル変更のみ。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1754" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1754</a></div>
+      <div class="ticket-title">事業別活動発生高集計表：R6基準時に帳票タイトルと金額項目名を変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準以降の場合、「事業別収支発生高集計表」（KOG0100）の帳票タイトルを「事業別活動発生高集計表」に変更。金額項目名も「増加金額」→「収益金額」、「減少金額」→「費用金額」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOG0100 事業別収支発生高集計表</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。列ヘッダーの表記が変わるため「帳票の見出しが変わった」という問い合わせが来る可能性がある。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1755" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1755</a></div>
+      <div class="ticket-title">事業別活動試算表：R6基準時に帳票タイトルを変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準対応として、「事業別収支試算表」（KOG0090）の帳票タイトルを「事業別活動試算表」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOG0090 事業別収支試算表</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。活動試算表（INFKAIKEI-1405）の開発完了後に着手した帳票のため、関連して問い合わせが来る場合は同一リリースで対応済みであることを案内。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1757" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1757</a></div>
+      <div class="ticket-title">貸借対照表試算表：「正味財産の部」→「純資産の部」に変更 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準対応として、貸借対照表試算表の「Ⅲ　正味財産の部」を「Ⅲ　純資産の部」に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">貸借対照表試算表、予算科目ワーク</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。表記変更のみ。「Ⅲ　正味財産の部という項目がなくなった」という問い合わせには「R6基準対応による表記変更」として案内。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1893" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1893</a></div>
+      <div class="ticket-title">日計表（現預金・収支）：R6基準での文言変更と長期性預金の範囲追加 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準以降の場合、「現預金」を「現金預金（資金）」に変更し、長期性預金科目を現金預金の範囲に含めるよう修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOOS050 日計表（現預金・収支）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。長期性預金が日計表に表示されるようになるため、「日計表の内容が増えた」という問い合わせがある可能性がある。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="group-label">令和6年基準対応（按分・財源区分処理）</div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1766" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1766</a> / 1768</div>
+      <div class="ticket-title">按分計算処理・按分確定処理：一般・指定区分ごとに処理するよう対応 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">伝票明細に追加された「一般・指定区分」ごとに按分計算・按分確定を行うよう修正。按分確定後に作成される伝票明細の財源コードは「保留」となる。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">按分計算処理、按分確定処理</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。財源コードが「保留」になることについて問い合わせが来る可能性がある。これは仕様であることを案内すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1767" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1767</a></div>
+      <div class="ticket-title">按分結果確認リスト：財源区分（一般・指定）を出力するよう対応 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">按分結果確認リストに「財源区分」（一般・指定）を出力するよう修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">按分結果確認リスト</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。リスト出力に「財源区分」列が追加されることを事前に案内できれば問い合わせを抑制できる。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1960" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1960</a></div>
+      <div class="ticket-title">伝票入力時按分：一般・指定区分ごとに按分処理するよう対応 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">伝票入力時の按分処理において、伝票明細の「一般・指定区分」ごとに按分を行うよう修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">伝票入力時按分</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。按分処理全体（1766/1768）と合わせてセットで確認すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="group-label">令和6年基準対応（その他）</div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1756" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1756</a></div>
+      <div class="ticket-title">事業所データ取出・取込：指定・一般区分と財源データに対応 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">「指定・一般区分」および「財源別管理」の各項目について、事業所データの取り出し・取り込みができるように修正。財源データの取り出し・取り込みにも対応。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOB0020 事業所データ取出、KOB0030 事業所データ取込、KOB0260 事業所データ取出設定、KOB0270 事業所データ取込設定</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人かつ事業所間でデータ移行を行う場合に影響。財源データが取込対象に加わることを事前に案内すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1932" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1932</a></div>
+      <div class="ticket-title">メニュー制御：R6基準の総合帳票・追加機能のオプション制御を追加 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準（正式版）の総合帳票と追加機能について、オプション設定による表示制御を追加。使途拘束資産管理オプションによるメニュー制御を削除。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">メニュー表示制御（CM_GetMenuList_Business）</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（適用前の事前準備が必要）</div>
+        <strong>最新のメニューマスタを事前に取り込む必要がある。</strong>リリース前のメニューは使用不可に設定されているため、適用時の手順を必ず確認すること。メニューが表示されない・使えないという問い合わせが来た場合はメニューマスタの取込状況を最初に確認すること。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1934" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1934</a></div>
+      <div class="ticket-title">科目使用一括訂正：財源別管理の訂正モードを追加 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">科目使用一括訂正（KOH0060）の訂正モード選択肢に「3-0：財源別管理」を追加。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KOH0060 科目使用一括訂正</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        <strong>マスターツールの変更のため、エンドユーザーへの影響なし。顧客連絡：不要。</strong>社内セットアップ担当者のみ対象。
+      </div>
+    </div>
+
+    <div class="group-label">インフラ・環境対応</div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1140" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1140</a></div>
+      <div class="ticket-title">Dev・Staging環境で共有KMSキーを使用するよう変更（本番環境への影響なし） <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">Dev・Staging環境において、AWS S3署名付きURL（文書アップロード処理）で共有KMSキーを使用するよう修正。本番環境への影響はなし。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">AWS S3 署名付きURL（文書アップロード処理）／Dev・Staging環境のみ</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        <strong>本番環境への影響なし。顧客連絡：不要。</strong>Dev・Staging環境のみの変更。TeamRise側と同タイミングでマージする必要があるため、適用時は開発チームと調整すること。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 新機能 -->
+  <div class="section">
+    <div class="section-title">新機能（3件）</div>
+
+    <div class="group-label">令和6年基準対応</div>
+
+    <div class="ticket-card feature">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1416" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1416</a></div>
+      <div class="ticket-title">使途拘束資産登録：マスタ登録プログラムを新規作成 <span class="type-tag feature">新機能</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">使途拘束資産マスタを登録するプログラムを新規作成（KIYV060）。利用には「使途拘束資産管理オプション」の導入設定が必要。科目選択ダイアログに「資産科目」タブを新規追加（科目種別区分の頭2桁が11・12・13の科目が対象）。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KIYV060 使途拘束資産登録、科目選択ダイアログ（資産科目タブ追加）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        「使途拘束資産管理オプション」として提供されているが、<strong>全ユーザーが無償で使用可能。</strong>オプション設定が必要な場合は担当者に設定を依頼すること。「使途拘束資産登録が使えない」という問い合わせにはオプション設定状況を最初に確認すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+    <div class="group-label">その他新機能</div>
+
+    <div class="ticket-card feature">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-832" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-832</a></div>
+      <div class="ticket-title">実費弁償（国保用）：「剰余金確認のための収入・支出の明細書」を新規作成 <span class="type-tag feature">新機能</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">旧「実費弁償」に相当する「剰余金確認のための収入・支出の明細書」の出力プログラムを新規作成（KHR0800）。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">KHR0800 実費弁償</div>
+      <div class="support-memo caution">
+        <div class="label">サポート対応メモ（<a href="https://makijapan.atlassian.net/browse/REQUEST-359" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">REQUEST-359</a>あり）</div>
+        REQUEST-359（奈良県国保連合会Inf移行スケジュール）に紐づく案件。<strong>栃木国保用の適用メンテを作成済み。</strong>運用として各国保連合会に個別ヒアリングを実施し、専用の適用メンテを作成する。<strong>サポートへの連絡が必要。</strong>対象の国保連合会を確認のうえ、サポート担当に連絡すること。
+      </div>
+    </div>
+
+    <div class="ticket-card feature">
+      <div class="ticket-id"><a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1928" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1928</a></div>
+      <div class="ticket-title">法人毎テーブルコピー（クラウド対応版）を新規作成 <span class="type-tag feature">新機能</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">クラウド環境においてクライアントからも実行できる法人毎テーブルコピーツールを新規作成。コピー処理をサーバー側へ移行した「HoujinCreateCloud.exe」を提供。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">HoujinCreateCloud.exe（法人毎テーブルコピー）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        クラウド版・オンプレ版の両方で使用可能。主に社内セットアップ作業で使用するため、顧客への直接影響は限定的。<strong>Ver2.7.2.0以降でないと使用不可。</strong>旧バージョン環境で使用しようとしている場合はバージョンアップを案内すること。利用方法は担当者に確認すること。顧客連絡：要確認。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- サポート対応上の注意点 -->
+  <div class="section">
+    <div class="section-title">サポート対応上の注意点</div>
+
+    <div class="notice">
+      <div class="notice-title">メニューマスタの事前取込が必要（INFKAIKEI-1932）</div>
+      <p>メニュー制御の変更に伴い、<strong>最新のメニューマスタを事前に取り込まないと新機能のメニューが表示されない。</strong>リリース当日の問い合わせを防ぐため、適用手順を事前に確認・共有しておくこと。</p>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">R6基準採用法人への影響が集中するリリース</div>
+      <p>今回のリリースは機能改善の大半がR6基準対応。帳票タイトルの変更・金額項目名の変更・財源区分の追加など、<strong>画面や帳票の見た目が変わる変更が多い。</strong>R6基準採用法人からの「表示が変わった」系の問い合わせに対しては、まずR6基準対応による変更かどうかを確認すること。</p>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">総勘定元帳で一般純資産科目が非表示になる（INFKAIKEI-1966）</div>
+      <p>一般純資産の科目は現時点でR6基準対応が未了のため、総勘定元帳への出力を停止。次回以降のバージョンで正式対応予定。R6基準採用法人から「元帳に科目が出ない」という問い合わせがあれば、<strong>次バージョンでの対応予定であることを案内すること。</strong></p>
+    </div>
+  </div>
+
+  <!-- 顧客連絡が必要な案件 -->
+  <div class="section">
+    <div class="section-title">顧客連絡が必要な案件</div>
+
+    <div class="alert-block">
+      <div class="alert-title">香川県農地機構（旧：香川県農業振興公社）</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1965" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1965</a> / <a href="https://makijapan.atlassian.net/browse/SUPPORT-2905" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">SUPPORT-2905</a> / 変換不可データリストに廃止科目が出力される問題の修正 / バージョン適用後にリストを再出力して正常表示を確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">栃木県国民健康保険団体連合会</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1762" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1762</a> / <a href="https://makijapan.atlassian.net/browse/SUPPORT-2613" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">SUPPORT-2613</a> / 予算要求集計表のパフォーマンス問題の修正 / バージョン適用後にパフォーマンスが改善されたことを確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">教科書研究センター</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1771" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1771</a> / 予算按分計算処理で緊急対策になる問題の修正 / バージョン適用後に按分処理が正常に動作することを確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">バイオ産業情報化コンソーシアム</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1889" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1889</a> / <a href="https://makijapan.atlassian.net/browse/SUPPORT-2732" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">SUPPORT-2732</a> / Excel出力でマイナス値が文字列になる問題の修正 / バージョン適用後にExcel出力のマイナス値が正常に数値として出力されることを確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">都城市文化振興財団</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-1949" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-1949</a> / <a href="https://makijapan.atlassian.net/browse/SUPPORT-2813" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">SUPPORT-2813</a> / 振替伝票A5様式が2枚出力になる問題の修正 / バージョン適用後に振替伝票A5様式が1枚出力になることを確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">国保連合会各法人（サポート連絡必要・適用メンテ作成運用）</div>
+      <p>チケット：<a href="https://makijapan.atlassian.net/browse/INFKAIKEI-832" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">INFKAIKEI-832</a> / <a href="https://makijapan.atlassian.net/browse/REQUEST-359" target="_blank" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">REQUEST-359</a> / 実費弁償（国保用）の新機能リリース / <strong>栃木国保用の適用メンテ作成済み。各国保連合会に個別ヒアリングを実施し専用メンテを作成する運用。サポート担当に連絡し対象法人を確認すること。</strong></p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>INF会計　リリースノート 2026/04/15（社内用・取扱注意）</span>
+    <span>2026年4月</span>
+  </div>
+
+</div>
+</body>
+</html>

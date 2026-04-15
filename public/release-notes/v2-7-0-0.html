@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
+    font-size: 10pt;
+    line-height: 1.75;
+    color: #2c2c2a;
+    background: #fff;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 18mm 16mm 18mm;
+  }
+
+  .cover {
+    border-left: 4px solid #1D9E75;
+    padding: 4px 0 4px 14px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 15pt; font-weight: 700; color: #1c1c1a; margin-bottom: 4px; }
+  .cover .meta { font-size: 9pt; color: #888780; }
+
+  .section { margin-bottom: 20px; }
+  .section-title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #888780;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #d3d1c7;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+  }
+
+  .summary {
+    background: #f5f4f0;
+    border-radius: 6px;
+    padding: 11px 14px;
+    font-size: 10pt;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .ticket-card {
+    border-radius: 6px;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    border-left: 3px solid transparent;
+  }
+  .ticket-card.bug         { background: #FEE2E2; border-left-color: #DC2626; }
+  .ticket-card.improvement { background: #E1F5EE; border-left-color: #1D9E75; }
+  .ticket-card.feature     { background: #EFF6FF; border-left-color: #2563EB; }
+  .ticket-card.other       { background: #f5f4f0; border-left-color: #b4b2a9; }
+
+  .ticket-id    { font-size: 7.5pt; font-weight: 700; color: #888780; margin-bottom: 2px; }
+  .ticket-title { font-size: 10pt; font-weight: 700; color: #1c1c1a; margin-bottom: 8px; }
+  .ticket-label { font-size: 7.5pt; font-weight: 700; color: #5F5E5A; margin-top: 7px; margin-bottom: 2px; }
+  .ticket-body  { font-size: 9pt; color: #3a3a38; line-height: 1.65; }
+
+  .type-tag {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .type-tag.bug         { background: #DC2626; color: #fff; }
+  .type-tag.improvement { background: #1D9E75; color: #fff; }
+  .type-tag.feature     { background: #2563EB; color: #fff; }
+  .type-tag.other       { background: #b4b2a9; color: #fff; }
+
+  .support-memo {
+    background: #fff;
+    border-radius: 4px;
+    padding: 7px 10px;
+    margin-top: 6px;
+    font-size: 9pt;
+    color: #3a3a38;
+    line-height: 1.65;
+  }
+  .support-memo .label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #085041;
+    margin-bottom: 3px;
+  }
+
+  .notice {
+    background: #FAEEDA;
+    border-radius: 6px;
+    padding: 11px 14px;
+    border-left: 3px solid #EF9F27;
+    margin-bottom: 10px;
+  }
+  .notice-title { font-size: 9pt; font-weight: 700; color: #633806; margin-bottom: 4px; }
+  .notice p     { font-size: 9pt; color: #633806; line-height: 1.7; }
+
+  .alert-block {
+    background: #FEF3C7;
+    border-radius: 6px;
+    padding: 11px 14px;
+    border-left: 3px solid #F59E0B;
+    margin-bottom: 10px;
+  }
+  .alert-block .alert-title { font-size: 9pt; font-weight: 700; color: #92400E; margin-bottom: 4px; }
+  .alert-block p            { font-size: 9pt; color: #92400E; line-height: 1.7; }
+
+  .footer {
+    margin-top: 24px;
+    padding-top: 8px;
+    border-top: 1px solid #d3d1c7;
+    font-size: 7.5pt;
+    color: #888780;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <h1>INF会計 Ver2.7.0.0　リリースノート</h1>
+    <div class="meta">社内サポートチーム向け　／　リリース日：2026年1月29日（予定）　／　社内配布用・取扱注意</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">このリリースの概要</div>
+    <div class="summary">
+      入金データ消込の根本対策（FB消込不具合）、TeamRise文書管理連動の機能拡張（内部文書添付対応）、令和6年基準対応の活動予算まわり整備を主軸とするリリース。不具合修正5件を含む。既存顧客への個別対応が必要な案件が複数あるため、本ノートの「顧客連絡が必要な案件」セクションを必ず確認すること。
+    </div>
+  </div>
+
+  <!-- バグ修正 -->
+  <div class="section">
+    <div class="section-title">バグ修正</div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id">INFKAIKEI-1613 / 1614 / 1615 / 1616</div>
+      <div class="ticket-title">FB入金消込での複式・単式金額不整合 <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">「入金済額＝伺書金額」であるにもかかわらず、複式側の執行済額が伝票金額を超えてしまう事象への根本対策。消込伝票確定時に「収支計上額を入金額と同額にする」を常時ONに変更。入金済フラグに加え執行済フラグも参照して候補抽出するよう修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">入金データ消込（FB入金取込・消込伝票確定・伺書選択）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        栃木国保様からの報告をトリガーとした根本対策。「収支計上額を入金額と同額にする」チェックボックスが画面から削除されるため、従来この項目を任意で操作していたユーザーには動作変更の説明が必要。Ver2.7.0.0適用後に問い合わせがあった場合は「常時ON仕様への変更」として案内すること。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id">INFKAIKEI-1651</div>
+      <div class="ticket-title">債権債務消込伝票入力：廃止部門コードによるエラー <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">消込元伝票に廃止部門コードが残存している場合にエラーが発生していた問題を修正。画面入力対象外の部門・案件を内部処理で空白初期化して処理継続するよう変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">債権債務消込伝票入力</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        対象法人：堺観光コンベンション協会（SUPPORT-2477）。本バージョン適用後に再現しないことを確認次第、同法人へ解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id">INFKAIKEI-1634</div>
+      <div class="ticket-title">納品明細参照でデータが重複表示される <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">グループコード単独で検索していたため、異なる関係者の同一グループコードが二重表示されていた問題を修正。関係者＋グループコードの複合条件で絞り込むよう変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">納品明細参照（個別メニュー）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        対象法人：埼玉水道サービス公社（SUPPORT-2464）。適用後に重複解消を確認し、同法人へ解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id">INFKAIKEI-1635</div>
+      <div class="ticket-title">事業別元帳で予算残額の繰越表示が誤っている <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">横形式かつ科目コード印字ONの設定時、2ページ目以降の「予算残の繰越」金額が誤っていた問題を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">事業別元帳（帳票出力）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        対象法人：諫早市施設管理公社（SUPPORT-2418）。適用後に帳票出力で繰越額が正常表示されることを確認し、同法人へ解消連絡を行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card bug">
+      <div class="ticket-id">INFKAIKEI-1642</div>
+      <div class="ticket-title">現預金名称に空白が含まれると帳票出力でBad Gatewayになる <span class="type-tag bug">バグ修正</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">科目名の末尾に空白が付いている場合、会計区分別内訳の帳票出力時に緊急対策画面（Bad Gateway）が発生していた問題を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">会計区分別内訳（帳票出力）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        対象法人：一般財団法人日本みち研究所（SUPPORT-2448）。同法人は現預金名称の空白を既に削除対応済みのため、個別連絡は不要。他法人で同様の事象が報告された場合は、名称末尾の空白有無を最初に確認すること。
+      </div>
+    </div>
+  </div>
+
+  <!-- 機能改善 -->
+  <div class="section">
+    <div class="section-title">機能改善</div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id">INFKAIKEI-1316 / 1363</div>
+      <div class="ticket-title">TeamRise文書管理連動：内部文書（稟議・決裁）の添付に対応 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">伝票入力画面から、従来の取引文書に加えてTeamRise側の内部文書（稟議・決裁関係）も添付できるように拡張。文書一覧に「属性（取引文書／内部文書）」の選択肢を追加。内部文書選択時は「取引先・取引年月日・取引金額」の入力欄を非表示に変更。合わせて、OPTSET2のエンドポイント設定メンテを提供。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">伝票入力（文書管理オプション有効時）、自動仕訳のエラー文言</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        会計クラウドへの反映は1/29予定。TeamRise側の対応はその後。会計側を先に適用しないと伝票修正時に緊急対策が発生するリスクがあるため、適用順序を必ず守ること。オンプレ文書管理ユーザーへは1月中に連絡が必要（対象法人リストを確認すること）。
+      </div>
+    </div>
+
+    <div class="ticket-card improvement">
+      <div class="ticket-id">INFKAIKEI-1661 / 1677 / 1722</div>
+      <div class="ticket-title">科目保守・科目コンバート（金融資産調整）の不具合修正 <span class="type-tag improvement">機能改善</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">科目コンバート後のExcel出力で科目並びが崩れる問題・特定資産への割当不具合を修正。科目保守での整合性チェック強化（集計フラグ・資金フラグ・科目種別）。会計区分別内訳での科目表示・法人税等調整額表示を調整。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">科目保守、科目コンバート（H20→R6変換）、会計区分別内訳</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        主にH20→R6コンバート作業中の法人が対象。コンバート後に金融資産調整Excelを出力している法人で科目順が崩れていた場合、本バージョン適用後に再出力を案内すること。
+      </div>
+    </div>
+  </div>
+
+  <!-- 新機能 -->
+  <div class="section">
+    <div class="section-title">新機能（令和6年基準対応）</div>
+
+    <div class="ticket-card feature">
+      <div class="ticket-id">INFKAIKEI-1485 / 1501 / 1502 / 1484 / 1503 / 1560 / 1561 / 1562 / 1576 / 1758</div>
+      <div class="ticket-title">活動予算入力・活動予算書・関連帳票の整備 <span class="type-tag feature">新機能</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">R6基準時、従来の「正味予算入力」系画面を「活動予算入力」に表示切替。活動予算書・事業別活動予算入力用紙・活動予算内訳表など一連の帳票を新設。前年度予算取込時の法人税科目・期首期末純資産額の取込不具合も合わせて修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">活動予算入力、事業別活動予算入力、事業別科目別活動予算入力、活動予算書、活動予算伺一覧表、活動予算案取込、活動予算内訳表、予算案按分</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        R6基準採用法人のみ対象。「正味予算」という表現が「活動予算」に変わることをユーザーに事前説明しておくと問い合わせを減らせる。帳票ファイル名もH20とR6で異なる（H20：「事業別正味予算入力用紙.xlsx」→R6：「事業別活動予算入力用紙.xlsx」）ため、ダウンロード時に混乱しないよう案内を準備すること。
+      </div>
+    </div>
+
+    <div class="ticket-card feature">
+      <div class="ticket-id">INFKAIKEI-1223 / 1226 / 1423</div>
+      <div class="ticket-title">不可欠科目作成・科目コンバート（H20→R6）・期首残登録（R6対応） <span class="type-tag feature">新機能</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">基本マスタの不可欠科目を納品用マスタへコピーするツールを提供。H20基準からR6基準への科目変換ツール。期首残登録画面で「正味財産」を「純資産」に変更し、R6追加科目（その他有価証券評価差額金等）の登録に対応。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">不可欠科目作成、科目コンバート、期首残登録</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        令和8年度移行ユーザーのセットアップ作業で使用するツール群。移行作業手順書と合わせて確認すること。期首残登録の「純資産」表記変更は、旧表記に慣れたユーザーから問い合わせが来る可能性がある。
+      </div>
+    </div>
+  </div>
+
+  <!-- 暫定版対応 -->
+  <div class="section">
+    <div class="section-title">暫定版ユーザー向け不具合修正</div>
+
+    <div class="ticket-card other">
+      <div class="ticket-id">INFKAIKEI-1664 / 1667</div>
+      <div class="ticket-title">会計名略称登録・対象科目登録の日付初期値が不正表示 <span class="type-tag other">その他</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">当年度から開始の法人で、前年度・前前年度の日付が「1753/1/1」などの不正な値で表示されていた問題を修正。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">会計名略称登録、会計名略称対象科目登録（暫定版のみ）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        暫定版利用中の法人のみ対象。本バージョン適用後は正常表示される。報告があった場合はバージョン確認を最初に行うこと。
+      </div>
+    </div>
+
+    <div class="ticket-card other">
+      <div class="ticket-id">INFKAIKEI-1730</div>
+      <div class="ticket-title">科目間振替調整入力：伝票入力不可科目が選択肢に表示される <span class="type-tag other">その他</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">振替区分1〜6において、伝票入力不可フラグの科目が選択肢に表示されていた問題を修正。対象科目を非表示に変更。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">科目間振替調整入力（暫定版のみ）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        暫定版利用中の法人のみ対象。選択肢が減ることへの問い合わせには「入力不可科目を除外する仕様修正」として案内すること。
+      </div>
+    </div>
+
+    <div class="ticket-card other">
+      <div class="ticket-id">INFKAIKEI-1640</div>
+      <div class="ticket-title">会計区分別内訳：法人税等調整額の合計行表示位置がズレる <span class="type-tag other">その他</span></div>
+      <div class="ticket-label">変更概要</div>
+      <div class="ticket-body">法人税等調整額の科目行が複数ある場合、合計行の出力位置がズレる問題を修正。合計行を非表示に変更することで対応。</div>
+      <div class="ticket-label">影響する機能・画面</div>
+      <div class="ticket-body">会計区分及び事業区分別内訳（暫定版のみ）</div>
+      <div class="support-memo">
+        <div class="label">サポート対応メモ</div>
+        暫定版利用中の法人のみ対象。合計行が非表示になるため、「合計が消えた」という問い合わせが来た場合は本修正の内容を説明すること。
+      </div>
+    </div>
+  </div>
+
+  <!-- サポート対応上の注意点 -->
+  <div class="section">
+    <div class="section-title">サポート対応上の注意点</div>
+
+    <div class="notice">
+      <div class="notice-title">TeamRise文書管理連動：会計側を先に適用すること</div>
+      <p>会計側とTeamRise側のバージョンアップには適用順序の制約がある。会計クラウドを先に適用しないと、伝票修正時に緊急対策が発生するリスクがある。TeamRise側の対応はその後実施。</p>
+    </div>
+
+    <div class="notice">
+      <div class="notice-title">FB入金消込：チェックボックス削除による挙動変更</div>
+      <p>「収支計上額を入金額と同額にする」チェックボックスが画面から削除され、常時ONになる。このチェックを手動でOFFにして運用していた法人がいた場合、動作変更の影響が出る可能性があるため事前確認が必要。</p>
+    </div>
+  </div>
+
+  <!-- 顧客連絡が必要な案件 -->
+  <div class="section">
+    <div class="section-title">顧客連絡が必要な案件</div>
+
+    <div class="alert-block">
+      <div class="alert-title">堺観光コンベンション協会</div>
+      <p>チケット：INFKAIKEI-1651 / 債権債務消込伝票入力のエラー解消 / バージョン適用後に動作確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">埼玉水道サービス公社</div>
+      <p>チケット：INFKAIKEI-1634 / 納品明細参照の重複表示解消 / バージョン適用後に動作確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">諫早市施設管理公社</div>
+      <p>チケット：INFKAIKEI-1635 / 事業別元帳の予算残額繰越表示の修正 / バージョン適用後に帳票出力で正常表示を確認のうえ解消連絡を行うこと</p>
+    </div>
+
+    <div class="alert-block">
+      <div class="alert-title">TeamRise文書管理オンプレユーザー（対象法人リスト要確認）</div>
+      <p>チケット：INFKAIKEI-1316 / 内部文書添付対応 / 1月中に機能追加の案内を送付すること。対象法人リストは担当者に確認すること</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>INF会計 Ver2.7.0.0　リリースノート（社内用・取扱注意）</span>
+    <span>2026年1月</span>
+  </div>
+
+</div>
+</body>
+</html>
