@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { getPolicyItem, getPolicyList } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -39,6 +40,7 @@ export default async function PolicyDetailPage({ params }: { params: Promise<{ s
 
         <div className="prose prose-sm max-w-none">
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             components={{
               a(props) {
                 const { href, children, ...rest } = props;
@@ -52,6 +54,14 @@ export default async function PolicyDetailPage({ params }: { params: Promise<{ s
                   >
                     {children}
                   </a>
+                );
+              },
+              blockquote(props) {
+                return (
+                  <blockquote
+                    className="border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-slate-700 not-italic [&_p:first-of-type]:before:content-none [&_p:last-of-type]:after:content-none"
+                    {...props}
+                  />
                 );
               },
               table(props) {

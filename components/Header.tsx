@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const NAV_ITEMS = [
   { label: "FAQ", href: "/faq" },
-  // { label: "社内方針", href: "/policies" },   // 修正1：一時非表示
+  { label: "社内方針", href: "/policies" },
   { label: "リリース情報", href: "/releases" },
 ];
 
