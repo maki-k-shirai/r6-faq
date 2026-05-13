@@ -71,6 +71,17 @@ export default function PolicyReleaseSection() {
 
           <section>
             <h2 className="mb-3 text-sm font-semibold text-gray-400">運用マニュアル</h2>
+            <a
+              href="https://docs.google.com/spreadsheets/d/1_bqRujdlfTNg0XNRooeoYIDsPaMh9oLHQoFfGbXm-mY/edit?gid=0#gid=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-3 flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              正式版進捗管理シートを開く
+            </a>
             <ul className="divide-y rounded-md border bg-white shadow-sm ring-1 ring-black/5">
               {manualList.map((m) => (
                 <li key={m.slug}>
