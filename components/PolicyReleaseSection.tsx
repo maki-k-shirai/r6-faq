@@ -71,6 +71,7 @@ export default function PolicyReleaseSection() {
 
         </div>
 
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <section>
           <h2 className="mb-3 text-sm font-semibold text-gray-400">運用マニュアル</h2>
           <a
@@ -106,6 +107,7 @@ export default function PolicyReleaseSection() {
             すべて見る →
           </Link>
         </section>
+        </div>
 
       </div>
     </>
