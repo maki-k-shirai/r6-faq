@@ -63,9 +63,14 @@ export const getReleaseList = (): ContentMeta[] =>
 export const getReleaseItem = (slug: string): ContentItem | null =>
   readFile("releases", slug);
 
+// --- 運用マニュアル ---
+export const getAllManuals = (): ContentMeta[] => readDir("manuals");
+export const getManualBySlug = (slug: string): ContentItem | null =>
+  readFile("manuals", slug);
+
 // --- 横断検索 ---
 export type SearchResult = {
-  section: "faq" | "policies" | "releases";
+  section: "faq" | "policies" | "releases" | "manuals";
   sectionLabel: string;
   slug: string;
   href: string;
@@ -116,6 +121,7 @@ export function getAllContent(query: string): SearchResult[] {
   }> = [
     // { dir: "policies", section: "policies", sectionLabel: "社内方針",     hrefBase: "/policies" },
     // { dir: "releases", section: "releases", sectionLabel: "リリース情報", hrefBase: "/releases" },
+    { dir: "manuals", section: "manuals", sectionLabel: "運用マニュアル", hrefBase: "/manuals" },
   ];
 
   for (const { dir, section, sectionLabel, hrefBase } of sections) {

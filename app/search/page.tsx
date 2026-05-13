@@ -2,12 +2,13 @@ import Link from "next/link";
 import { getAllContent, type SearchResult } from "@/lib/content";
 import SearchSection from "@/components/SearchSection";
 
-const SECTION_ORDER: SearchResult["section"][] = ["policies", "faq", "releases"];
+const SECTION_ORDER: SearchResult["section"][] = ["policies", "faq", "releases", "manuals"];
 
 const SECTION_STYLES: Record<SearchResult["section"], string> = {
   policies: "bg-amber-50 text-amber-700",
   faq:      "bg-blue-50 text-blue-700",
   releases: "bg-violet-50 text-violet-700",
+  manuals:  "bg-green-50 text-green-700",
 };
 
 const SUGGESTED_KEYWORDS = ["費用", "マイナンバー", "移行時期", "科目体系", "申込方法"];
