@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "FAQ", href: "/faq" },
   { label: "社内方針", href: "/policies" },
   { label: "リリース情報", href: "/releases" },
+  { label: "運用マニュアル", href: "/manuals" },
 ];
 
 export default function Header() {

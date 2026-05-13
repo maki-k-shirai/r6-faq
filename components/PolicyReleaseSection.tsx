@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { getPolicyList, getReleaseList } from "@/lib/content";
+import { getAllManuals, getPolicyList, getReleaseList } from "@/lib/content";
 
 export default function PolicyReleaseSection() {
   const policyList = getPolicyList()
     .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1))
     .slice(0, 3);
   const releaseList = getReleaseList().slice(0, 3);
+  const manualList = getAllManuals().slice(0, 3);
 
   return (
     <>
@@ -16,7 +17,7 @@ export default function PolicyReleaseSection() {
           事前に把握する
         </p>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
 
           <section>
             <h2 className="mb-3 text-sm font-semibold text-gray-400">社内方針・非対応事項</h2>
@@ -62,6 +63,31 @@ export default function PolicyReleaseSection() {
             </ul>
             <Link
               href="/releases"
+              className="mt-2 block text-right text-xs text-gray-400 hover:underline"
+            >
+              すべて見る →
+            </Link>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-gray-400">運用マニュアル</h2>
+            <ul className="divide-y rounded-md border bg-white shadow-sm ring-1 ring-black/5">
+              {manualList.map((m) => (
+                <li key={m.slug}>
+                  <Link
+                    href={`/manuals/${m.slug}`}
+                    className="flex items-center justify-between px-4 py-3 transition hover:bg-gray-50"
+                  >
+                    <span className="text-sm font-medium text-gray-800">{m.title}</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0 text-gray-400">
+                      <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/manuals"
               className="mt-2 block text-right text-xs text-gray-400 hover:underline"
             >
               すべて見る →
