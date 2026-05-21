@@ -3,6 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { FAQ } from "@/app/faq/types";
 
 // 6カテゴリ（表示順）
@@ -401,15 +402,25 @@ function ItemCard({
           <div className="rounded-md px-4 py-3 text-sm leading-relaxed bg-gray-50">
             <div className="prose prose-sm max-w-none">
               <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 components={{
                   a(props) {
+                    const { href, ...rest } = props;
+                    const isExternal = href?.startsWith("http");
                     return (
                       <a
-                        {...props}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={href}
+                        {...rest}
+                        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                         className="text-blue-700 underline hover:opacity-80"
                       />
+                    );
+                  },
+                  table(props) {
+                    return (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm" {...props} />
+                      </div>
                     );
                   },
                   ul(props) {
@@ -443,6 +454,30 @@ function ItemCard({
               </ReactMarkdown>
             </div>
           </div>
+
+          {/* 関連資料 */}
+          {item.related_links && item.related_links.length > 0 && (
+            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+              <p className="mb-1.5 text-xs font-medium text-slate-500">関連資料</p>
+              <ul className="space-y-1">
+                {item.related_links.map((link) => (
+                  <li key={link.href} className="flex items-center gap-1.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 text-slate-400">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M13 2v7h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <a
+                      href={link.href}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs text-blue-700 underline hover:opacity-80"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* アクション行 */}
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">

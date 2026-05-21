@@ -5,4 +5,5 @@ export type FAQ = {
   answer: string;
   tags: string[];
   updated_at: string;
+  related_links?: Array<{ label: string; href: string }>;
 };
