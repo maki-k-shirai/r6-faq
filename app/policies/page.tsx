@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 export default function PoliciesPage() {
-  const items = getPolicyList();
+  const items = getPolicyList().sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
 
   return (
     <div className="min-h-screen">
