@@ -1,7 +1,7 @@
 // components/FaqList.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { FAQ } from "@/app/faq/types";
@@ -80,6 +80,19 @@ export default function FaqList({ faqs, initialQuery = "" }: Props) {
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleOpen = (id: number) =>
     setOpenId((prev) => (prev === id ? null : id));
+
+  // URLハッシュ (#faq-{id}) があれば該当カードを自動展開してスクロール
+  useEffect(() => {
+    const hash = window.location.hash;
+    const match = hash.match(/^#faq-(\d+)$/);
+    if (!match) return;
+    const id = parseInt(match[1], 10);
+    setOpenId(id);
+    // DOMが描画された後にスクロール
+    requestAnimationFrame(() => {
+      document.getElementById(`faq-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   // --- コピー状態（トースト用） ---
   const [copiedId, setCopiedId] = useState<number | null>(null);
@@ -355,6 +368,7 @@ function ItemCard({
 }) {
   return (
     <li
+      id={`faq-${item.id}`}
       className={[
         "rounded-md border bg-white shadow-sm transition",
         color.border,

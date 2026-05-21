@@ -100,7 +100,7 @@ export function getAllContent(query: string): SearchResult[] {
           section: "faq",
           sectionLabel: "FAQ",
           slug: String(item.id),
-          href: `/faq?q=${encodeURIComponent(query)}`,
+          href: `/faq?q=${encodeURIComponent(query)}#faq-${item.id}`,
           title: item.question,
           excerpt: answer.length > 80 ? answer.slice(0, 80) + "…" : answer,
           updated_at: "",
