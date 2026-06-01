@@ -14,6 +14,7 @@ const BUCKETS = [
   "帳票・出力",
   "費用・契約",
   "オプション機能",
+  "制度・全体像",
 ] as const;
 type Bucket = (typeof BUCKETS)[number];
 
@@ -57,6 +58,12 @@ const COLORS: Record<
     chip: "bg-teal-50",
     chipText: "text-teal-700",
     hover: "hover:bg-teal-50",
+  },
+  "制度・全体像": {
+    border: "border-indigo-200",
+    chip: "bg-indigo-50",
+    chipText: "text-indigo-700",
+    hover: "hover:bg-indigo-50",
   },
 };
 
