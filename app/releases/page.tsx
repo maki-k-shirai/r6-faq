@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getReleaseList } from "@/lib/content";
+import ReleaseStatusSection from "@/components/ReleaseStatusSection";
 
 export const metadata = {
   title: "リリース情報 | 令和6年基準対応ポータル",
@@ -26,6 +27,7 @@ export default function ReleasesPage() {
       </section>
 
       <div className="mx-auto max-w-5xl px-4 py-8">
+        <ReleaseStatusSection />
         <ul className="divide-y rounded-2xl border bg-white shadow-sm">
           {items.map((item) => (
             <li key={item.slug}>
