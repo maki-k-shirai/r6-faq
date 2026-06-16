@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllManuals, getPolicyList, getReleaseList } from "@/lib/content";
+import ReleaseStatusSection from "@/components/ReleaseStatusSection";
 
 export default function PolicyReleaseSection() {
   const policyList = getPolicyList()
@@ -16,6 +17,11 @@ export default function PolicyReleaseSection() {
         <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">
           事前に把握する
         </p>
+
+        <section>
+          <h2 className="mb-3 text-sm font-semibold text-gray-400">リリース状況</h2>
+          <ReleaseStatusSection />
+        </section>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
 

@@ -27,27 +27,34 @@ export default function ReleasesPage() {
       </section>
 
       <div className="mx-auto max-w-5xl px-4 py-8">
-        <ReleaseStatusSection />
-        <ul className="divide-y rounded-2xl border bg-white shadow-sm">
-          {items.map((item) => (
-            <li key={item.slug}>
-              <Link
-                href={`/releases/${item.slug}`}
-                className="group flex items-center justify-between px-6 py-4 transition hover:bg-slate-50"
-              >
-                <span className="font-medium text-slate-800 group-hover:text-violet-700">
-                  {item.title}
-                </span>
-                <div className="flex items-center gap-4 shrink-0">
-                  <span className="text-xs text-slate-400">{item.updated_at}</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-slate-400">
-                    <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  </svg>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="lg:sticky lg:top-6 lg:self-start">
+            <ReleaseStatusSection />
+          </div>
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-slate-400">リリースノート</h2>
+            <ul className="divide-y rounded-2xl border bg-white shadow-sm">
+              {items.map((item) => (
+                <li key={item.slug}>
+                  <Link
+                    href={`/releases/${item.slug}`}
+                    className="group flex items-center justify-between px-6 py-4 transition hover:bg-slate-50"
+                  >
+                    <span className="font-medium text-slate-800 group-hover:text-violet-700">
+                      {item.title}
+                    </span>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span className="text-xs text-slate-400">{item.updated_at}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-slate-400">
+                        <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
